@@ -10,8 +10,8 @@ import torch
 import torch.nn as nn
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
-from torch.cuda.amp import GradScaler
-from torch.cuda.amp import autocast
+from torch.amp import GradScaler
+from torch.amp import autocast
 
 from datasets import load_dataset
 from transformers import PreTrainedTokenizerBase
@@ -138,7 +138,7 @@ class Trainer:
             self.scheduler = CosineWithWarmup(self.optimizer, warmup_steps=self.cfg.warmup_steps, max_steps=total_steps)
 
         # torch.cuda.amp.GradScaler doesn't take a device string (unlike torch.amp.GradScaler in newer torch).
-        self.scaler = GradScaler(enabled=self.cfg.fp16)
+        self.scaler = GradScaler('cuda', enabled=self.cfg.fp16)
 
         # Create output dir
         os.makedirs(self.cfg.output_dir, exist_ok=True)
@@ -184,11 +184,11 @@ class Trainer:
             batch[k] = v.to(self.device, non_blocking=True)
 
         if self.data_config.task_type == TaskType.CLASSIFICATION:
-            with autocast(enabled=self.cfg.fp16):
+            with autocast('cuda', enabled=self.cfg.fp16):
                 out = self.model(input_ids=batch["input_ids"], attention_mask=batch.get("attention_mask"), labels=batch.get("labels"))
                 loss = out["loss"]
         elif self.data_config.task_type == TaskType.REGRESSION:
-            with autocast(enabled=self.cfg.fp16):
+            with autocast('cuda', enabled=self.cfg.fp16):
                 out = self.model(input_ids=batch["input_ids"], attention_mask=batch.get("attention_mask"), labels=batch.get("labels"))
                 loss = out["loss"]
         else:

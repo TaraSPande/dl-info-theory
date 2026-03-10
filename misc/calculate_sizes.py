@@ -16,9 +16,9 @@ def calculate_tsizes(n_row, reps=10, min_val=6, max_val=None):
 
     return vals.astype(int)
 
-tsizes = sorted(set(calculate_tsizes(50318)))
+tsizes = sorted(set(calculate_tsizes(25798)))
 
-task = "classification"
+task = "regression"
 model = "transformer"
 attention = "vanilla"
 
@@ -27,11 +27,11 @@ for ts in tsizes:
   --task {task} \
   --model {model} \
   --csv data/task_1_{task}.csv \
-  --features V1,V2,V3,V4,V5 \
-  --label Y \
+  --features MolWt,MolLogP,TPSA,RingCount,NumHeteroAtoms \
+  --label Potency \
   --max-train-samples {ts} \
   --attn-self-enc {attention}")
 
-    print(f"python main.py eval \
-  --run ./runs/{task}-{model}-task_1_{task}-enc6d512h8-{attention}_n{ts} \
-  --max-eval-samples 100")
+#     print(f"python main.py eval \
+#   --run ./runs/{task}-{model}-task_1_{task}-enc6d512h8-{attention}_n{ts} \
+#   --max-eval-samples 100")
