@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-# df = pd.read_csv('data/task_1_classification.csv')
+# df = pd.read_csv('../data/task_2_regression.csv')
 # print(len(df))
 
 def calculate_tsizes(n_row, reps=10, min_val=6, max_val=None):
@@ -16,19 +16,19 @@ def calculate_tsizes(n_row, reps=10, min_val=6, max_val=None):
 
     return vals.astype(int)
 
-tsizes = sorted(set(calculate_tsizes(25798)))
+tsizes = sorted(set(calculate_tsizes(100000)))
 
 task = "regression"
 model = "transformer"
-attention = "synth_random"
+attention = "vanilla"
 
 for ts in tsizes:
     print(f"python main.py train \
   --task {task} \
   --model {model} \
   --csv data/task_1_{task}.csv \
-  --features MolWt,MolLogP,TPSA,RingCount,NumHeteroAtoms \
-  --label Potency \
+  --features MolWt,MolLogP,TPSA,BertzCT,NumValenceElectrons \
+  --label homolumogap \
   --max-train-samples {ts} \
   --attn-self-enc {attention}")
 
