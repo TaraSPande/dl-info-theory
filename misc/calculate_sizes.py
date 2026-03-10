@@ -20,7 +20,7 @@ tsizes = sorted(set(calculate_tsizes(25798)))
 
 task = "regression"
 model = "transformer"
-attention = "vanilla"
+attention = "synth_random"
 
 for ts in tsizes:
     print(f"python main.py train \
@@ -32,6 +32,6 @@ for ts in tsizes:
   --max-train-samples {ts} \
   --attn-self-enc {attention}")
 
-#     print(f"python main.py eval \
-#   --run ./runs/{task}-{model}-task_1_{task}-enc6d512h8-{attention}_n{ts} \
-#   --max-eval-samples 100")
+    print(f"python main.py eval \
+  --run ./runs/{task}-{model}-task_1_{task}-enc6d512h8-{attention}_n{ts} \
+  --max-eval-samples 100")

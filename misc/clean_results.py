@@ -5,35 +5,42 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
 
-model_task = "transformer_vanilla_classification"
+trans_type = "_dense"
+model_task = f"transformer{trans_type}_regression"
 
 # load json
-with open("results/"+model_task+".json", "r") as f:
+with open("../results/"+model_task+".json", "r") as f:
     data = json.load(f)
 
 rows = []
 
+
+
+
 #REGRESSION
-# for entry in data:
-#     run_dir = entry["run_dir"]
-#     rmse = entry["metrics"]["rmse"]
-#     model_family = entry["model_family"]
-
-#     # extract the number after n
-#     n = int(re.search(r'n(\d+)', run_dir).group(1))
-
-#     rows.append({"n_train": n, "rmse": rmse, "model": model_family})
-
-#CLASSIFICATION
 for entry in data:
     run_dir = entry["run_dir"]
-    acc = entry["metrics"]["acc"]
+    rmse = entry["metrics"]["rmse"]
     model_family = entry["model_family"]
 
     # extract the number after n
     n = int(re.search(r'n(\d+)', run_dir).group(1))
 
-    rows.append({"n_train": n, "accuracy": acc, "model": model_family+"_vanilla"})
+    rows.append({"n_train": n, "rmse": rmse, "model": f"{model_family}{trans_type}"})
+
+#CLASSIFICATION
+# for entry in data:
+#     run_dir = entry["run_dir"]
+#     acc = entry["metrics"]["acc"]
+#     model_family = entry["model_family"]
+
+#     # extract the number after n
+#     n = int(re.search(r'n(\d+)', run_dir).group(1))
+
+#     rows.append({"n_train": n, "accuracy": acc, "model": f"{model_family}{trans_type}"})
+
+
+
 
 df = pd.DataFrame(rows)
 
@@ -41,7 +48,7 @@ df = pd.DataFrame(rows)
 df = df.sort_values("n_train")
 
 
-df.to_csv("results/"+model_task+".csv", index=False)
+df.to_csv("../results/"+model_task+".csv", index=False)
 
 
 # x = df["n_train"]
